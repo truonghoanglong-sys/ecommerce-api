@@ -2,3 +2,7 @@
 .env
 node_modules/
 src/generated/
+# Thêm vào .gitignore
+echo ".claude/" >> .gitignore
+echo ".windsurf/" >> .gitignore
+echo ".agents/" >> .gitignore
