@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+model Role {
+  roleid   Int    @id @default(autoincrement())
+  rolename String @db.VarChar(50)
+
+  users User[]
+
+  @@map("role")
+}
+
+model MemberShip {
+  mid    Int    @id @default(autoincrement())
+  mname  String @db.VarChar(50)
+  score  Int
+
+  users User[]
+
+  @@map("membership")
+}
+
+model User {
+  uid      Int    @id @default(autoincrement())
+  username String @db.VarChar(50)
+  fullname String @db.VarChar(100)
+  password String @db.VarChar(255)
+
+  roleid Int
+  role   Role @relation(fields: [roleid], references: [roleid])
+
+  mid        Int?
+  membership MemberShip? @relation(fields: [mid], references: [mid])
+
+  orders Order[]
+
+  @@map("user")
+}
+
+model Product {
+  pid      Int    @id @default(autoincrement())
+  pname    String @db.VarChar(100)
+  price    Decimal @db.Decimal(10, 2)
+  quantity Int
+
+  orderDetails OrderDetail[]
+
+  @@map("product")
+}
+
+model Order {
+  oid      Int      @id @default(autoincrement())
+  createat DateTime @default(now())
+
+  uid  Int
+  user User @relation(fields: [uid], references: [uid])
+
+  orderDetails OrderDetail[]
+  shipments    Shipment[]
+
+  @@map("order")
+}
+
+model OrderDetail {
+  oid       Int
+  pid       Int
+  qty       Int
+  unitPrice Decimal @map("unit_price") @db.Decimal(10, 2)
+
+  order   Order   @relation(fields: [oid], references: [oid])
+  product Product @relation(fields: [pid], references: [pid])
+
+  @@id([oid, pid])
+  @@map("orderdetail")
+}
+
+model Shipment {
+  shipid Int    @id @default(autoincrement())
+  status String @db.VarChar(50)
+
+  oid   Int
+  order Order @relation(fields: [oid], references: [oid])
+
+  @@map("shipment")
+}

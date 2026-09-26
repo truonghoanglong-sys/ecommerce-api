@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+.agents
+.claude
+.cursor
+.devin
+src/generated
+prisma/migrations/dev.db
+*.md
